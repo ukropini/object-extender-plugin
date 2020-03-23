@@ -18,8 +18,10 @@ You can configure a hot key (shortcut key) to trigger this PlugIn - go to `Confi
 
 ## Usage
 
-Right click:
+**Right click**:
+
 ![rightclick](img/right-click.gif)
 
-Shortcut key:
-![shortcut](img/shortcut.gif)
+**Shortcut key**:
+
+![shortcut](img/shortkey.gif)
