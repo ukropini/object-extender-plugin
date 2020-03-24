@@ -89,7 +89,8 @@ DECLARE
       AND    type_name <> method_name
             /* skip MAP and ORDER functions */
       AND    method_type = 'PUBLIC'
-      ORDER  BY lvl;
+      ORDER  BY lvl,
+                method_no;
     r_methods c_methods%ROWTYPE;
     ----
     PROCEDURE PREPARE_METHOD
@@ -313,6 +314,54 @@ DECLARE
     END APPEND_TYPE_SPEC;
     ----
     PROCEDURE APPEND_TYPE_BODY IS
+      ----
+      PROCEDURE APPEND_CODE_SAMPLE(par_method IN lt_method) IS
+        lb_first_param BOOLEAN;
+      BEGIN
+        WL('IS');
+        IF par_method.return_type IS NOT NULL
+        THEN
+          WL('  lv_supertype_result ' || par_method.return_type || CASE
+               WHEN UPPER(par_method.return_type) LIKE ('%VARCHAR%') THEN
+                '(32767)'
+               ELSE
+                NULL
+             END || ';');
+        END IF;
+        WL('BEGIN');
+        WL('/* -- uncomment this code if you want to inherit supertype logic');
+        IF par_method.return_type IS NOT NULL
+        THEN
+          WL('lv_supertype_result := ');
+        END IF;
+        WL('(SELF AS ' || LOWER(par_supertype_owner || '.' || par_supertype_name) || ').' ||
+           UPPER(par_method.method_name) || '(');
+        FOR i IN 1 .. NVL(par_method.params.count(), 0)
+        LOOP
+          lb_first_param := TRUE;
+          IF UPPER(par_method.params(i).param_name) <> 'SELF'
+          THEN
+            IF NOT lb_first_param
+            THEN
+              WA(',');
+            END IF;
+            WL(LOWER(par_method.params(i).param_name) || ' => ' || LOWER(par_method.params(i).param_name));
+            lb_first_param := FALSE;
+          END IF;
+        END LOOP;
+        WL(');');
+        WL('*/');
+        WL('');
+        WL('-- implement subtype logic here');
+        IF par_method.return_type IS NULL
+        THEN
+          WL('NULL;');
+        ELSE
+          WL('RETURN(NULL);');
+        END IF;
+        WL('END ' || par_method.method_name || ';');
+      END APPEND_CODE_SAMPLE;
+      ----
     BEGIN
       WL('CREATE OR REPLACE TYPE BODY ' || LOWER(USER) || '.' || lc_new_type || ' IS');
       WL('');
@@ -328,12 +377,7 @@ DECLARE
       
         WL('--------------------------------------------------------------------------------------------------');
         ADD_METHOD_SPEC(par_methods(i));
-        IF par_methods(i).return_type IS NULL
-        THEN
-          WL(' IS BEGIN NULL; END ' || par_methods(i).method_name || ';');
-        ELSE
-          WL(' IS BEGIN RETURN(NULL); END ' || par_methods(i).method_name || ';');
-        END IF;
+        APPEND_CODE_SAMPLE(par_methods(i));
       
       END LOOP;
       WL('  --------------------------------------------------------------------------------------------------');
