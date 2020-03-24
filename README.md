@@ -1,10 +1,10 @@
 # ObjectExtender PlugIn
 
-ObjectExtender PlugIn for [PL/SQL Developerd](https://www.allroundautomations.com/products/pl-sql-developer/) designed to simplify subtype creation.
+ObjectExtender PlugIn for [PL/SQL Developerd](https://www.allroundautomations.com/products/pl-sql-developer/) is designed to simplify subtype creation.
 
 ## Installation
 
-Copy **ObjectExtenderPlugIn.dll** and **ObjectExtenderPlugIn.sql** files (you can find them in [Compiled](Compiled) directory) to the your PlugIn directory and restart PL/SQL Developer.
+Copy **ObjectExtenderPlugIn.dll** and **ObjectExtenderPlugIn.sql** files (you can find them in [Compiled](Compiled) directory) to your PlugIn directory and restart PL/SQL Developer.
 
 PL/SQL Developer PlugIn directory can be found in `Configure -> Preferences -> Files -> Directories -> Plug-Ins` in your PL/SQL Developer.
 
@@ -26,7 +26,7 @@ You can configure a hot key (shortcut key) to trigger this PlugIn - go to `Confi
 
 ## Customization
 
-You can change the logic of subtype creation by editing the **CREATE_NEW_TYPE_SCRIPT** procedure in [ObjectExtenderPlugIn.sql](Compiled/ObjectExtenderPlugIn.sql) file or you can completely refactor the file. There is only one requirement for this file - you must specify **:type_owner** and **:type_name** SQL variables.
+You can change the logic of subtype creation by editing the **CREATE_NEW_TYPE_SCRIPT** procedure in [ObjectExtenderPlugIn.sql](Compiled/ObjectExtenderPlugIn.sql) file or you can completely refactor the file. There is only one requirement for this file - you must specify the **:type_owner** and **:type_name** SQL variables.
 
 ## Built With
 
